@@ -1,0 +1,333 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Penjualan Vue JS</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+      integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+      integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div class="container-fluid">
+        <div class="row bg-dark">
+          <div class="col-lg-12">
+            <p
+              class="text-center text-light display-4 pt-2"
+              style="font-size: 24px"
+            >
+              Data Penjualan dengan Vue JS
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="row mt-3">
+          <div class="col-lg-6">
+            <h3 class="text-info">Register User</h3>
+          </div>
+          <div class="col-lg-6">
+            <button class="btn btn-info float-right" v-on:click="addNewUser()">
+              <i class="fas fa-user"></i>&nbsp;&nbsp; Add New User
+            </button>
+          </div>
+        </div>
+        <hr class="bg-info" />
+        <div class="alert alert-danger" v-if="errorMsg">{{errorMsg}}</div>
+        <div class="alert alert-success" v-if="successMsg">{{successMsg}}</div>
+
+        <!-- display record -->
+        <div class="row">
+          <div class="col-lg-12">
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr class="text-center" bg-info text-light>
+                  <th>No</th>
+                  <th>Nama Barang</th>
+                  <th>stock</th>
+                  <th>Jumlah Terjual</th>
+                  <th>ttransaksi</th>
+                  <th>jbarang</th>
+                  <th>Ubah</th>
+                  <th>Hapus</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="text-center" v-for="baran in barang">
+                  <td>{{baran.no}}</td>
+                  <td>{{baran.name}}</td>
+                  <td>{{baran.stock}}</td>
+                  <td>{{baran.jumlahterjual}}</td>
+                  <td>{{baran.ttransaksi}}</td>
+                  <td>{{baran.jbarang}}</td>
+                  <td>
+                    <a
+                      href="#"
+                      class="text-success"
+                      v-on:click="addNewEditUser()"
+                      ><i class="fas fa-edit"></i
+                    ></a>
+                  </td>
+                  <td>
+                    <a href="#" class="text-danger" v-on:click="deleteUser()"
+                      ><i class="fas fa-trash"></i
+                    ></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- Add new user model -->
+      <div id="overlay" v-show="showAddModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Tambah Barang</h5>
+              <button type="button" class="close" v-on:click="addNewUser()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body p-4">
+              <form action="" method="post">
+                <div class="form-group">
+                  <input
+                    type="text"
+                    name="name"
+                    class="form-control form-control-lg"
+                    placeholder="Nama Barang"
+                  />
+                </div>
+                <div class="form-group">
+                  <input
+                    type="number"
+                    name="stock"
+                    class="form-control form-control-lg"
+                    placeholder="stock"
+                  />
+                </div>
+                <div class="form-group">
+                  <input
+                    type="number"
+                    name="jumlahterjual"
+                    class="form-control form-control-lg"
+                    placeholder="Jumlah Terjual"
+                  />
+                </div>
+                <div class="form-group">
+                  <input
+                    type="date"
+                    name="ttransaksi"
+                    class="form-control form-control-lg"
+                    placeholder="Tanggal Transaksi"
+                  />
+                </div>
+                <div class="form-group">
+                  <input
+                    type="text"
+                    name="jbarang"
+                    class="form-control form-control-lg"
+                    placeholder="Jenis Barang"
+                  />
+                </div>
+                <div class="form-group">
+                  <button
+                    class="btn btn-info btn-block btn-lg"
+                    v-on:click="addBarang()"
+                  >
+                    Tambah Barang
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- editusermodel -->
+      <div id="overlay" v-show="showEditModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">ubah barang</h5>
+              <button type="button" class="close" v-on:click="addNewEditUser()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body p-4">
+              <form action="#" method="post">
+                <div class="form-group">
+                  <input
+                    type="text"
+                    name="name"
+                    class="form-control form-control-lg"
+                    placeholder="Nama Barang"
+                    v-model="addBarang.name"
+                  />
+                </div>
+                <div class="form-group">
+                  <input
+                    type="number"
+                    name="stock"
+                    class="form-control form-control-lg"
+                    placeholder="stock"
+                    v-model="addBarang.stock"
+                  />
+                </div>
+                <div class="form-group">
+                  <input
+                    type="number"
+                    name="jumlahterjual"
+                    class="form-control form-control-lg"
+                    placeholder="Jumlah Terjual"
+                    v-model="addBarang.jumlahterjual"
+                  />
+                </div>
+                <div class="form-group">
+                  <input
+                    type="date"
+                    name="ttransaksi"
+                    class="form-control form-control-lg"
+                    placeholder="Tanggal Transaksi"
+                    v-model="addBarang.ttransaksi"
+                  />
+                </div>
+                <div class="form-group">
+                  <input
+                    type="text"
+                    name="jbarang"
+                    class="form-control form-control-lg"
+                    placeholder="Jenis Barang"
+                  />
+                </div>
+                <div class="form-group">
+                  <button
+                    class="btn btn-info btn-block btn-lg"
+                    v-on:click="addNewEditUser()"
+                  >
+                    Update User
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- delete -->
+      <div id="overlay" v-show="showDeleteModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">hapus barang</h5>
+              <button type="button" class="close" v-on:click="deleteUser()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body p-4">
+              <h4 class="text-danger">
+                Kamu yakin akan menghapus barang ini ?
+              </h4>
+              <h5>hapus barang ini</h5>
+              <hr />
+              <button class="btn btn-danger btn-lg">Yes</button>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <button class="btn btn-success btn-lg" v-on:click="deleteUser()">
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.14/vue.common.dev.min.js"></script>
+    <script>
+      let app = new Vue({
+        el: "#app",
+        data: {
+          errorMsg: "",
+          successMsg: "",
+          showAddModal: false,
+          showEditModal: false,
+          showDeleteModal: false,
+          barang: [],
+          newBarang: {
+            name: "",
+            stock: "",
+            jumlahterjual: "",
+            ttransaksi: "",
+            jbarang: "",
+          },
+          currentBarang: {},
+        },
+        mounted: function () {
+          this.getAllBarang();
+        },
+        methods: {
+          getAllBarang() {
+            axios
+              .get("http://localhost/crudtugas/process.php?action=read")
+              .then(function (response) {
+                if (response.data.error) {
+                  app.errorMsg = response.data.message;
+                } else {
+                  app.barang = response.data.barang;
+                }
+              });
+          },
+          addBarang() {
+            var FormData = app.toFormData(app.addBarang);
+            axios
+              .post(
+                "http://localhost/crudtugas/process.php?action=create",
+                FormData
+              )
+              .then(function (response) {
+                app.addBarang = {
+                  name: "",
+                  stock: "",
+                  jumlahterjual: "",
+                  ttransaksi: "",
+                  jbarang: "",
+                };
+                if (response.data.error) {
+                  app.errorMsg = response.data.message;
+                } else {
+                  app.successMsg = response.data.message;
+                  app.getAllBarang();
+                }
+              });
+          },
+          toFormData(obj) {
+            var fd = new FormData();
+            for (var i in obj) {
+              fd.append(i, obj[i]);
+            }
+            return fd;
+          },
+          addNewUser() {
+            this.showAddModal = !this.showAddModal;
+          },
+          addNewEditUser() {
+            this.showEditModal = !this.showEditModal;
+          },
+          deleteUser() {
+            this.showDeleteModal = !this.showDeleteModal;
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
